@@ -1,0 +1,3 @@
+venv27wsl
+*.pyc
+.sconsign.dblite
