@@ -1612,6 +1612,9 @@ def Readfile(file, remove_linebreaks=0, ignore_error=0):
 		except:
 			if not ignore_error:
 				Error(_("Cannot read file:")+" %s"%file)
+		# remove UTF-8 BOM
+		if sys.version_info.major > 2 and data and data[0] and data[0][0] == '\ufeff':
+			data[0] = data[0][1:]
 	if remove_linebreaks:
 		data = [re.sub('[\n\r]+$','',x) for x in data]
 	Message(_("File read (%d lines): %s")%(len(data),file),2)
