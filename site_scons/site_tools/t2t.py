@@ -12,6 +12,7 @@
 #http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 ###
 
+from __future__ import absolute_import
 def txt2tags_actionFunc(target,source,env):
 	import txt2tags
 	txt2tags.exec_command_line([str(source[0])])
