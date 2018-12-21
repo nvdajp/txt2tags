@@ -1617,7 +1617,7 @@ def Readfile(file, remove_linebreaks=0, ignore_error=0):
 	Message(_("File read (%d lines): %s")%(len(data),file),2)
 	return data
 def Savefile(file, contents):
-	try: f = open(file, 'wb')
+	try: f = open(file, 'wb') if sys.version_info.major == 2 else open(file, 'w', encoding='utf-8')
 	except: Error(_("Cannot open file for writing:")+" %s"%file)
 	if type(contents) == type([]): doit = f.writelines
 	else: doit = f.write
