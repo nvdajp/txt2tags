@@ -1548,10 +1548,10 @@ def getRegexes():
 	bank['linkmark'] = re.compile(
 		r'\[(?P<label>%s|[^]]+) (?P<link>%s|%s|%s)\]'%(
 		  patt_img, retxt_url, patt_email, retxt_url_local),
-		re.L+re.I)
+		re.L+re.I if sys.version_info.major == 2 else re.I)
 	
 	# Image
-	bank['img'] = re.compile(patt_img, re.L+re.I)
+	bank['img'] = re.compile(patt_img, re.L+re.I if sys.version_info.major == 2 else re.I)
 	
 	# Special things
 	bank['special'] = re.compile(r'^%!\s*')
@@ -1609,7 +1609,10 @@ def Readfile(file, remove_linebreaks=0, ignore_error=0):
 			if not ignore_error:
 				Error(_('You must feed me with data on STDIN!'))
 	else:
-		try: f = open(file); data = f.readlines() ; f.close()
+		try:
+			f = open(file) if sys.version_info.major == 2 else open(file, encoding='utf-8')
+			data = f.readlines()
+			f.close()
 		except:
 			if not ignore_error:
 				Error(_("Cannot read file:")+" %s"%file)
