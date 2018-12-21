@@ -1510,6 +1510,7 @@ def getRegexes():
 	  'login' : r'A-Za-z0-9_.-',             # for ftp://login@domain.com
 	  'pass'  : r'[^ @]*',                   # for ftp://login:pass@dom.com
 	  'chars' : r'A-Za-z0-9%._/~:,=$@&+-',   # %20(space), :80(port), D&D
+	  'echar' : r'A-Za-z0-9%_/~:,=$@&+-',    # endmost char (does not include period)
 	  'anchor': r'A-Za-z0-9%._-',            # %nn(encoded)
 	  'form'  : r'A-Za-z0-9/%&=+;.,$@*_-',   # .,@*_-(as is)
 	  'punct' : r'.,;:!?'
@@ -1520,9 +1521,9 @@ def getRegexes():
 	
 	# [ http:// ] [ username:password@ ] domain.com [ / ]
 	#     [ #anchor | ?form=data ]
-	retxt_url = r'\b(%s%s|%s)[%s]+\b/*(\?[%s]+)?(#[%s]*)?'%(
+	retxt_url = r'\b(%s%s|%s)[%s]+[%s]/*(\?[%s]+)?(#[%s]*)?'%(
 	             urlskel['proto'],patt_url_login, urlskel['guess'],
-	             urlskel['chars'],urlskel['form'],urlskel['anchor'])
+	             urlskel['chars'],urlskel['echar'],urlskel['form'],urlskel['anchor'])
 	
 	# filename | [ filename ] #anchor
 	retxt_url_local = r'[%s]+|[%s]*(#[%s]*)'%(
