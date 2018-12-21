@@ -1617,16 +1617,19 @@ def Readfile(file, remove_linebreaks=0, ignore_error=0):
 			if not ignore_error:
 				Error(_("Cannot read file:")+" %s"%file)
 		# remove UTF-8 BOM
-		if sys.version_info.major > 2 and data and data[0] and data[0][0] == '\ufeff':
+		if sys.version_info.major >= 3 and data and data[0] and data[0][0] == '\ufeff':
 			data[0] = data[0][1:]
 	if remove_linebreaks:
 		data = [re.sub('[\n\r]+$','',x) for x in data]
 	Message(_("File read (%d lines): %s")%(len(data),file),2)
 	return data
 def Savefile(file, contents):
-	try: f = open(file, 'wb') if sys.version_info.major == 2 else open(file, 'w', encoding='utf-8')
+	try: f = open(file, 'wb')
 	except: Error(_("Cannot open file for writing:")+" %s"%file)
-	if type(contents) == type([]): doit = f.writelines
+	if sys.version_info.major >= 3 and type(contents) == type([]):
+		doit = f.write
+		contents = ('\n'.join([s.rstrip('\n') for s in contents]) + '\n').encode('utf-8')
+	elif type(contents) == type([]): doit = f.writelines
 	else: doit = f.write
 	doit(contents) ; f.close()
 
