@@ -8,14 +8,12 @@
 """Utilities related to NVDA Key Commands documents.
 """
 
-from __future__ import absolute_import
 import os
 import codecs
 import re
 import txt2tags
-from six.moves import range
 
-LINE_END = u"\r\n"
+LINE_END = "\r\n"
 
 class KeyCommandsError(Exception):
 	"""Raised due to an error encountered in the User Guide related to generation of the Key Commands document.
@@ -197,7 +195,7 @@ class KeyCommandsMaker(object):
 		for level, heading in enumerate(self._headings[level:], level):
 			# We don't want numbered headings in the output.
 			label=heading.group("label")
-			headingText = u"{id}{txt}{id}{label}".format(
+			headingText = "{id}{txt}{id}{label}".format(
 				id="=" * len(heading.group("id")),
 				txt=heading.group("txt"),
 				label="[%s]" % label if label else "")
@@ -268,9 +266,9 @@ class KeyCommandsMaker(object):
 		desc = next(self._ug).strip()
 		self._lineNum += 1
 
-		self._kc.write(u"| {name} | {keys} | {desc} |{lineEnd}".format(
+		self._kc.write("| {name} | {keys} | {desc} |{lineEnd}".format(
 			name=name,
-			keys=u" | ".join(keys),
+			keys=" | ".join(keys),
 			desc=desc, lineEnd=LINE_END))
 
 	def remove(self):

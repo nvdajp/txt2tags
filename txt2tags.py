@@ -94,10 +94,6 @@
 
 # User config (1=ON, 0=OFF)
 
-from __future__ import absolute_import
-from __future__ import print_function
-from six.moves import map
-from six.moves import range
 USE_I18N    = 1   # use gettext for i18ned messages?        (default is 1)
 COLOR_DEBUG = 1   # show debug messages in colors?          (default is 1)
 BG_LIGHT    = 0   # your terminal background color is light (default is 0)
