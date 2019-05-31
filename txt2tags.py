@@ -1752,10 +1752,10 @@ class CommandLine:
 	def parse(self, cmdline=[]):
 		"Check/Parse a command line list     TIP: no program name!"
 		# Get the valid options
-		short, int = self.short_opts, self.long_opts
+		shortopts, longopts = self.short_opts, self.long_opts
 		# Parse it!
 		try:
-			opts, args = getopt.getopt(cmdline, short, int)
+			opts, args = getopt.getopt(cmdline, shortopts, longopts)
 		except getopt.error as errmsg:
 			Error(_("%s (try --help)")%errmsg)
 		return (opts, args)
