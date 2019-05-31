@@ -3,7 +3,7 @@
 # http://txt2tags.sf.net
 #
 # Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Aurelio Jargas
-# Copyright 2018 Takuya Nishimoto
+# Copyright 2018, 2019 Takuya Nishimoto
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -1545,10 +1545,10 @@ def getRegexes():
 	bank['linkmark'] = re.compile(
 		r'\[(?P<label>%s|[^]]+) (?P<link>%s|%s|%s)\]'%(
 		  patt_img, retxt_url, patt_email, retxt_url_local),
-		re.L+re.I if sys.version_info.major == 2 else re.I)
+		re.I)
 	
 	# Image
-	bank['img'] = re.compile(patt_img, re.L+re.I if sys.version_info.major == 2 else re.I)
+	bank['img'] = re.compile(patt_img, re.I)
 	
 	# Special things
 	bank['special'] = re.compile(r'^%!\s*')
@@ -1607,14 +1607,14 @@ def Readfile(file, remove_linebreaks=0, ignore_error=0):
 				Error(_('You must feed me with data on STDIN!'))
 	else:
 		try:
-			f = open(file) if sys.version_info.major == 2 else open(file, encoding='utf-8')
+			f = open(file, encoding='utf-8')
 			data = f.readlines()
 			f.close()
 		except:
 			if not ignore_error:
 				Error(_("Cannot read file:")+" %s"%file)
 		# remove UTF-8 BOM
-		if sys.version_info.major >= 3 and data and data[0] and data[0][0] == '\ufeff':
+		if data and data[0] and data[0][0] == '\ufeff':
 			data[0] = data[0][1:]
 	if remove_linebreaks:
 		data = [re.sub('[\n\r]+$','',x) for x in data]
@@ -1623,7 +1623,7 @@ def Readfile(file, remove_linebreaks=0, ignore_error=0):
 def Savefile(file, contents):
 	try: f = open(file, 'wb')
 	except: Error(_("Cannot open file for writing:")+" %s"%file)
-	if sys.version_info.major >= 3 and type(contents) == type([]):
+	if type(contents) == type([]):
 		doit = f.write
 		contents = ('\n'.join([s.rstrip('\n') for s in contents]) + '\n').encode('utf-8')
 	elif type(contents) == type([]): doit = f.writelines
