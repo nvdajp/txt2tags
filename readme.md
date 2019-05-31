@@ -24,9 +24,9 @@ scons
 ## Environments
 
 * Python 3.7.1 (Win32)
-* Python 2.7.15 (Win32)
 * Python 3.5.2 (Ubuntu 16.04.3 LTS on WSL)
-* Python 2.7.12 (Ubuntu 16.04.3 LTS on WSL)
+
+six branch works with Python 2.7 as well.
 
 ## Remarks
 
