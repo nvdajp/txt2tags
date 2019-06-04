@@ -1587,7 +1587,7 @@ def Message(msg,level):
 def Debug(msg,id=0,linenr=None):
 	"Show debug messages, categorized (colored or not)"
 	if QUIET or not DEBUG: return
-	if int(id) not in list(range(8)): id = 0
+	if int(id) not in range(8): id = 0
 	# 0:black 1:red 2:green 3:yellow 4:blue 5:pink 6:cyan 7:white ;1:light
 	ids            = ['INI','CFG','SRC','BLK','HLD','GUI','OUT','DET']
 	colors_bgdark  = ['7;1','1;1','3;1','6;1','4;1','5;1','2;1','7;1']
@@ -1623,7 +1623,7 @@ def Readfile(file, remove_linebreaks=0, ignore_error=0):
 def Savefile(file, contents):
 	try: f = open(file, 'wb')
 	except: Error(_("Cannot open file for writing:")+" %s"%file)
-	if type(contents) == type([]):
+	if isinstance(contents, list):
 		doit = f.write
 		contents = ('\n'.join([s.rstrip('\n') for s in contents]) + '\n').encode('utf-8')
 	elif type(contents) == type([]): doit = f.writelines
@@ -1837,7 +1837,7 @@ class CommandLine:
 			# Default values are useless on cmdline
 			if val == dft_options.get(key): continue
 			# -short format
-			if key in list(use_short.keys()):
+			if key in use_short:
 				args.append('-'+use_short[key])
 				continue
 			# --long format
@@ -2112,7 +2112,7 @@ class ConfigMaster:
 			key = key[3:]              # remove prefix
 			val = self.off.get(key)    # turn key OFF
 		# Is this key valid?
-		if key not in list(self.defaults.keys()):
+		if key not in self.defaults:
 			Debug('Bogus Config %s:%s'%(key,val),1)
 			return
 		# Is this value the default one?
@@ -2124,8 +2124,8 @@ class ConfigMaster:
 			return
 		# Flags ON comes empty. we'll add the 1 value now
 		if val == '' and (
-		   key in list(self.dft_flags.keys()) or
-		   key in list(self.dft_actions.keys())):
+		   key in self.dft_flags or
+		   key in dft_actions):
 			val = 1
 		# Multi value or single?
 		if key in self.multi:
@@ -3352,7 +3352,7 @@ def dumpConfig(source_raw, parsed_config):
 		if key == 'preproc' or key == 'postproc':
 			continue
 		# Flag beautifier
-		if key in list(FLAGS.keys()) or key in list(ACTIONS.keys()):
+		if key in FLAGS or key in ACTIONS:
 			val = onoff.get(val) or val
 		# List beautifier
 		if type(val) == type([]):
@@ -4041,7 +4041,7 @@ def get_include_contents(file, path=''):
 	id = 't2t'
 	# Set include type and remove identifier marks
 	mark = file[0]
-	if mark in list(ids.keys()):
+	if mark in ids:
 		if file[:2] == file[-2:] == mark*2:
 			id = ids[mark]     # set type
 			file = file[2:-2]  # remove marks
