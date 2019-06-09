@@ -1627,7 +1627,8 @@ def Savefile(file, contents):
 	doit(contents) ; f.close()
 
 def showdic(dic):
-	for k in dic.keys(): print("%15s : %s" % (k,dic[k]))
+	for k, v in dic.items():
+		print("%15s : %s" % (k,v))
 def dotted_spaces(txt=''):
 	return txt.replace(' ','.')
 
@@ -1722,7 +1723,7 @@ class CommandLine:
 		ret = []
 		for opt in self.short_long.keys():
 			long = self.short_long[opt]
-			if int in self.all_options: # is flag or option?
+			if long in self.all_options: # is flag or option?
 				opt = opt+':'        # option: have param
 			ret.append(opt)
 		#Debug('Valid SHORT options: %s'%ret)
@@ -1761,7 +1762,7 @@ class CommandLine:
 		if not cmdline: return []
 		ret = []
 		# We need lists, not strings
-		if type(cmdline) in (type(''), type(u'')):
+		if isinstance(cmdline, str):
 			cmdline = self._tokenize(cmdline)
 		opts, args = self.parse(cmdline[:])
 		# Parse all options
@@ -2066,12 +2067,11 @@ class ConfigMaster:
 		"Turns OFF all the config/options/flags"
 		off = {}
 		for key in self.defaults.keys():
-			kind = type(self.defaults[key])
-			if kind == type(9):
+			if isinstance(self.defaults[key], int):
 				off[key] = 0
-			elif kind == type('') or kind == type(u''):
+			elif isinstance(self.defaults[key], str):
 				off[key] = ''
-			elif kind == type([]):
+			elif isinstance(self.defaults[key], list):
 				off[key] = []
 			else:
 				Error('ConfigMaster: %s: Unknown type'+key)
@@ -3031,14 +3031,13 @@ class BlockMaster:
 	def _get_escaped_hold(self):
 		ret = []
 		for line in self.hold():
-			linetype = type(line)
-			if linetype == type('') or linetype == type(u''):
+			if isinstance(line, str):
 				ret.append(self._last_escapes(line))
-			elif linetype == type([]):
+			elif isinstance(line, list):
 				ret.extend(line)
 			else:
 				Error("BlockMaster: Unknown HOLD item type:"
-				      " %s"%linetype)
+				      " %s"%type(line))
 		return ret
 	
 	def _remove_twoblanks(self, lastitem):
@@ -3125,7 +3124,7 @@ class BlockMaster:
 		
 		if open: result.append(tagindent+open)     # open block
 		for item in self.hold():
-			if type(item) == type([]):
+			if isinstance(item, list):
 				result.extend(item)        # subquotes
 			else:
 				item = myre.sub('', item)  # del TABs
@@ -3204,7 +3203,7 @@ class BlockMaster:
 			
 			# Process next lines for this item (if any)
 			for line in item:
-				if type(line) == type([]): # sublist inside
+				if isinstance(line, list): # sublist inside
 					result.extend(line)
 				else:
 					line = self._last_escapes(line)
@@ -3341,7 +3340,7 @@ def dumpConfig(source_raw, parsed_config):
 		print()
 	# Then the parsed results of all of them
 	print(_('Full PARSED config'))
-	keys = list(parsed_config.keys()) ; keys.sort()  # sorted
+	keys = sorted(parsed_config.keys())
 	for key in keys:
 		val = parsed_config[key]
 		# Filters are the last
@@ -3351,7 +3350,7 @@ def dumpConfig(source_raw, parsed_config):
 		if key in FLAGS or key in ACTIONS:
 			val = onoff.get(val) or val
 		# List beautifier
-		if type(val) == type([]):
+		if isinstance(val, list):
 			if key == 'options': sep = ' '
 			else               : sep = ', '
 			val = sep.join(val)
@@ -3654,13 +3653,13 @@ def EscapeCharHandler(action, data):
 
 def maskEscapeChar(data):
 	"Replace any Escape Char \ with a text mask (Input: str or list)"
-	if type(data) == type([]):
+	if isinstance(data, list):
 		return [EscapeCharHandler('mask', x) for x in data]
 	return EscapeCharHandler('mask',data)
 
 def unmaskEscapeChar(data):
 	"Undo the Escape char \ masking (Input: str or list)"
-	if type(data) == type([]):
+	if isinstance(data, list):
 		return [EscapeCharHandler('unmask', x) for x in data]
 	return EscapeCharHandler('unmask',data)
 
@@ -3921,7 +3920,7 @@ def process_source_file(file='', noconf=0, contents=[]):
 		elif full_parsed.get('show-config-value'):
 			config_value = full_parsed.get(full_parsed['show-config-value'])
 			if config_value:
-				if type(config_value) == type([]):
+				if isinstance(config_value, list):
 					print('\n'.join(config_value))
 				else:
 					print(config_value)
